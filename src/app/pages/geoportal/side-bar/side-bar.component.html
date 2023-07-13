@@ -1,0 +1,35 @@
+<mat-sidenav-container>
+
+  <mat-sidenav mode="side" opened>
+      <button mat-button class="option-buttons" (click)="dibujarPoligono()">Dibujar</button>
+      <button mat-button class="option-buttons" (click)="seleccionar(polygonId)">Seleccionar</button>
+      <button mat-button class="option-buttons" (click)="descargar()">Descargar Geometrías</button>
+      <button mat-button class="option-buttons" (click)="eliminarGeometrias()">Eliminar Geometrías</button>
+
+
+
+    <div class="polygon-data">
+      <label>Coordenadas del polígono en formato WKT:</label>
+      <textarea id="coordinatesTextArea"></textarea>
+
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content mat-elevation-z4 ">
+      <ng-content></ng-content> <!-- AQUÍ SE ESTÁ PROYECTANDO LO QUE ESTÁ EN GEOPORTAL -->
+
+      <div class="capas">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>layers</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="togglePNOA()">PNOA</button>
+          <button mat-menu-item (click)="toggleWMS()">WMS</button>
+        </mat-menu>
+      </div>
+
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

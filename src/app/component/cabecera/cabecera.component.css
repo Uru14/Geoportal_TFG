@@ -1,0 +1,15 @@
+.navbar {
+  justify-content: space-between;
+}
+.button-container {
+  display: flex;
+  align-items: center;
+}
+
+.button-container button:not(:last-child) {
+  margin-right: 20px;
+}
+
+.GIcon {
+  transform-box: border-box;
+}
