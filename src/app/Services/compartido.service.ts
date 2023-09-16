@@ -18,8 +18,15 @@ export class CompartidoService {
   public drawing$ = new BehaviorSubject<boolean>(this.drawing);
   public selecting$ = new BehaviorSubject<boolean>(this.selecting);
   public selectedPolygonId: string = '';
+  public selectedGeometryType: string = '';
+  public drawingPunto: boolean = false;
+  public drawingDistancia: boolean = false;
+  public drawingPunto$ = new BehaviorSubject<boolean>(this.drawingPunto);
+  public drawingDistancia$ = new BehaviorSubject<boolean>(this.drawingDistancia);
 
-  constructor() { }
+
+  constructor() {
+  }
 
   togglePNOA() {
     this.showPNOA = !this.showPNOA;
@@ -42,29 +49,77 @@ export class CompartidoService {
     this.selecting = false;
     this.drawing$.next(this.drawing);
     this.selecting$.next(this.selecting);
+    this.drawingPunto$.next(false);
+    this.drawingDistancia$.next(false);
   }
 
-  seleccionar(polygonId: string) {
+  dibujarPunto() {
+    console.log("dibujar punto called");
+    this.drawingPunto = !this.drawingPunto;
+    this.drawingDistancia = false;
+    this.drawingPunto$.next(this.drawingPunto);
+    this.drawingDistancia$.next(false);
+    this.drawing$.next(false);
+  }
+
+  dibujarDistancia() {
+    console.log("dibujar distancia called");
+    this.drawingDistancia = !this.drawingDistancia;
+    this.drawingPunto = false;
+    this.drawingDistancia$.next(this.drawingDistancia);
+    this.drawingPunto$.next(false);
+    this.drawing$.next(false);
+  }
+
+  // seleccionar(polygonId: string) {
+  //   console.log("seleccionar called");
+  //   this.selecting = !this.selecting;
+  //   this.drawing = false;
+  //   this.drawingPunto$.next(false);
+  //   this.drawingDistancia$.next(false);
+  //   this.selecting$.next(this.selecting);
+  //   this.drawing$.next(this.drawing);
+  //   this.selectedPolygonId = polygonId; // Guarda el ID del polígono seleccionado
+  // }
+  seleccionar(geometryType: string) {
     console.log("seleccionar called");
     this.selecting = !this.selecting;
     this.drawing = false;
+    this.drawingPunto$.next(false);
+    this.drawingDistancia$.next(false);
     this.selecting$.next(this.selecting);
     this.drawing$.next(this.drawing);
-    this.selectedPolygonId = polygonId; // Guarda el ID del polígono seleccionado
-  }
-  getSelectedPolygonId(): string {
-    return this.selectedPolygonId;
+    this.selectedGeometryType = geometryType; // Guarda el tipo de geometría seleccionado
   }
 
-  descargar(){
+  // getSelectedPolygonId(): string {
+  //   return this.selectedPolygonId;
+  // }
+  getSelectedGeometryType(): string {
+    return this.selectedGeometryType;
+  }
+
+  private eliminarGeometriasSubject = new Subject<void>();
+
+  eliminarGeometrias$ = this.eliminarGeometriasSubject.asObservable();
+
+  triggerEliminarGeometrias() {
+    this.eliminarGeometriasSubject.next();
+  }
+
+
+  descargar() {
     const localStorageProvider = new LocalStorageProvider();
     const geometrias = localStorageProvider.getData();
+
 
     jsonexport(geometrias, function (err: any, csv: string) {
       if (err) {
         console.error('Error al generar el archivo CSV:', err);
         return;
       }
+
+      console.log('Contenido del archivo CSV:', csv); // Agregar esta línea
 
       const nombreArchivo = 'geometrias.csv';
       const link = document.createElement('a');
@@ -76,12 +131,5 @@ export class CompartidoService {
       document.body.removeChild(link);
     });
   }
-
-  private eliminarGeometriasSubject = new Subject<void>();
-
-  eliminarGeometrias$ = this.eliminarGeometriasSubject.asObservable();
-
-  triggerEliminarGeometrias() {
-    this.eliminarGeometriasSubject.next();
-  }
 }
+

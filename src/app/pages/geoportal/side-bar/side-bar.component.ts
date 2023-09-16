@@ -15,7 +15,9 @@ import WKT from 'ol/format/WKT.js';
 export class SideBarComponent implements OnInit {
 
   selectedPolygonCoordinates: string = '';
+  selectedGeometryCoordinates: string = '';
   polygonId: string = '';
+  geometryType: string = '';
   wktFormat: WKT = new WKT();
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
   @ViewChild(GeoportalComponent) geoportalComponent!: GeoportalComponent;
@@ -35,18 +37,35 @@ export class SideBarComponent implements OnInit {
   dibujarPoligono() {
     this.compartidoService.dibujarPoligono();
   }
-
-  seleccionar(polygonId: string) {
-    this.polygonId = polygonId;
-    this.compartidoService.seleccionar(this.polygonId);
-    const selectedPolygonId = this.compartidoService.getSelectedPolygonId();
-    this.selectedPolygonCoordinates = this.localStorageProvider.getPolygonDataById(selectedPolygonId);
+  dibujarPunto() {
+    this.compartidoService.dibujarPunto();
+  }
+  dibujarDistancia() {
+    this.compartidoService.dibujarDistancia();
   }
 
+  // seleccionar(polygonId: string) {
+  //   this.polygonId = polygonId;
+  //   this.compartidoService.seleccionar(this.polygonId);
+  //   // const selectedPolygonId = this.compartidoService.getSelectedPolygonId();
+  //   const selectedPolygonId = this.compartidoService.getSelectedGeometryType();
+  //   this.selectedPolygonCoordinates = this.localStorageProvider.getPolygonDataById(selectedPolygonId);
+  // }
+  seleccionar(geometryType: string) {
+    this.geometryType = geometryType;
+    this.compartidoService.seleccionar(geometryType);
+    const selectedGeometryId = this.compartidoService.getSelectedGeometryType();
+    this.selectedGeometryCoordinates = this.localStorageProvider.getGeometryDataById(selectedGeometryId);
+  }
+
+  eliminarGeometrias() {
+    this.compartidoService.triggerEliminarGeometrias();
+  }
 
   descargar(){
     return this.compartidoService.descargar();
   }
+
 
   // getPolygonData(): string {
   //   const polygonData = this.localStorageProvider.getData();
@@ -63,8 +82,6 @@ export class SideBarComponent implements OnInit {
   ngOnInit(): void {
     // this.selectedPolygonCoordinates = this.getPolygonData();
   }
-  eliminarGeometrias() {
-    this.compartidoService.triggerEliminarGeometrias();
-  }
+
 
 }

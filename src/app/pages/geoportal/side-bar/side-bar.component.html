@@ -1,11 +1,22 @@
 <mat-sidenav-container>
 
   <mat-sidenav mode="side" opened>
-      <button mat-button class="option-buttons" (click)="dibujarPoligono()">Dibujar</button>
-      <button mat-button class="option-buttons" (click)="seleccionar(polygonId)">Seleccionar</button>
-      <button mat-button class="option-buttons" (click)="descargar()">Descargar Geometrías</button>
-      <button mat-button class="option-buttons" (click)="eliminarGeometrias()">Eliminar Geometrías</button>
 
+    <div class="dibujar-seleccionar-buttons">
+      <button mat-button [matMenuTriggerFor]="drawMenu" class="option-buttons">Dibujar</button>
+      <mat-menu #drawMenu="matMenu">
+        <button mat-menu-item (click)="dibujarPunto()">Punto</button>
+        <button mat-menu-item (click)="dibujarDistancia()">Distancia</button>
+        <button mat-menu-item (click)="dibujarPoligono()">Polígono</button>
+      </mat-menu>
+
+      <button mat-button class="option-buttons" (click)="seleccionar(geometryType)">Seleccionar
+      </button>
+    </div>
+
+
+    <button mat-button class="option-buttons" (click)="descargar()">Descargar Geometrías</button>
+    <button mat-button class="option-buttons" (click)="eliminarGeometrias()">Eliminar Geometrías</button>
 
 
     <div class="polygon-data">
@@ -25,7 +36,7 @@
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="togglePNOA()">PNOA</button>
-          <button mat-menu-item (click)="toggleWMS()">WMS</button>
+          <button mat-menu-item (click)="toggleWMS()">Catastro</button>
         </mat-menu>
       </div>
 

@@ -1,7 +1,7 @@
 
 mat-sidenav{
   margin: 16px;
-  width: 200px;
+  width: 250px;
   border-right: none;
   background: #1fabe1;
   color: white;
@@ -28,14 +28,38 @@ mat-sidenav-container {
   height: calc(100vh - 65px);
 }
 
-.option-buttons{
-  display: inline;
+.dibujar-seleccionar-buttons{
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1rem;
-  border-radius: 15px;
-  margin-bottom: 20px;
+  max-width: 220px;
 }
+.mat-button,
+.option-buttons {
+  background-color: #7d009f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px 2px;
+}
+.mat-button:hover,
+.option-buttons:hover {
+  background-color: #48005c;
+}
+
+
+.mat-menu-item {
+  background-color: #7d009f;
+  color: #fff;
+}
+
+
+.mat-menu-item:hover {
+  background-color: #48005c;
+}
+
 .capas {
   position: absolute;
   top: 20px;
@@ -60,3 +84,4 @@ mat-sidenav-container {
   height: 200px;
   width: 150px;
 }
+
