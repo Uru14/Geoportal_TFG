@@ -15,7 +15,15 @@
     </div>
 
 
-    <button mat-button class="option-buttons" (click)="descargar()">Descargar Geometrías</button>
+    <div class="download-buttons">
+      <button mat-button [matMenuTriggerFor]="downloadMenu" class="option-buttons">Descargar Geometrías</button>
+      <mat-menu #downloadMenu="matMenu">
+        <button mat-menu-item (click)="descargarFormato('geojson')">GeoJSON</button>
+        <button mat-menu-item (click)="descargarFormato('wkt')">WKT</button>
+        <button mat-menu-item (click)="descargarFormato('csv')">CSV</button>
+      </mat-menu>
+    </div>
+
     <button mat-button class="option-buttons" (click)="eliminarGeometrias()">Eliminar Geometrías</button>
 
 
@@ -24,6 +32,14 @@
       <textarea id="coordinatesTextArea"></textarea>
 
     </div>
+
+    <input type="file" (change)="onFileSelected($event)" accept=".geojson" />
+
+    <label>URL del servicio WMS:</label>
+    <input type="text" [(ngModel)]="wmsUrl" placeholder="Introduce la URL del servicio WMS" />
+    <button mat-button (click)="agregarWMS()">Agregar WMS</button>
+
+
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -39,6 +55,7 @@
           <button mat-menu-item (click)="toggleWMS()">Catastro</button>
         </mat-menu>
       </div>
+
 
     </div>
   </mat-sidenav-content>

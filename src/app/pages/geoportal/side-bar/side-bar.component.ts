@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { MatSidenav } from "@angular/material/sidenav";
 import {CompartidoService} from "../../../Services/compartido.service";
 import {LocalStorageProvider} from "../../../Services/LocalStorageService/LocalStorageProvider";
 import {GeoportalComponent} from "../geoportal.component";
-import WKT from 'ol/format/WKT.js';
-
+import { Map as OLMap, View} from 'ol';
 
 
 @Component({
@@ -14,13 +13,15 @@ import WKT from 'ol/format/WKT.js';
 })
 export class SideBarComponent implements OnInit {
 
-  selectedPolygonCoordinates: string = '';
   selectedGeometryCoordinates: string = '';
-  polygonId: string = '';
   geometryType: string = '';
-  wktFormat: WKT = new WKT();
+  formatoSeleccionado: string = '';
+  wmsUrl: string = '';
+
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
   @ViewChild(GeoportalComponent) geoportalComponent!: GeoportalComponent;
+  @Input() map!: OLMap;
+
 
   constructor(
     private compartidoService : CompartidoService,
@@ -44,13 +45,6 @@ export class SideBarComponent implements OnInit {
     this.compartidoService.dibujarDistancia();
   }
 
-  // seleccionar(polygonId: string) {
-  //   this.polygonId = polygonId;
-  //   this.compartidoService.seleccionar(this.polygonId);
-  //   // const selectedPolygonId = this.compartidoService.getSelectedPolygonId();
-  //   const selectedPolygonId = this.compartidoService.getSelectedGeometryType();
-  //   this.selectedPolygonCoordinates = this.localStorageProvider.getPolygonDataById(selectedPolygonId);
-  // }
   seleccionar(geometryType: string) {
     this.geometryType = geometryType;
     this.compartidoService.seleccionar(geometryType);
@@ -62,26 +56,39 @@ export class SideBarComponent implements OnInit {
     this.compartidoService.triggerEliminarGeometrias();
   }
 
-  descargar(){
-    return this.compartidoService.descargar();
+  descargarFormato(formato: string) {
+    this.formatoSeleccionado = formato;
+    this.compartidoService.descargar(this.formatoSeleccionado);
   }
 
-
-  // getPolygonData(): string {
-  //   const polygonData = this.localStorageProvider.getData();
-  //   // Puedes formatear los datos de los polígonos según tus necesidades
-  //   // return JSON.stringify(polygonData);
-  //   const wktGeometries = polygonData.map((item: any) => {
-  //     const coordinates = item.geometry[0]; // Obtenemos las coordenadas del primer anillo
-  //     const wktCoordinates = coordinates.map((coord: number[]) => coord.join(' ')).join(', ');
-  //     return `POLYGON ((${wktCoordinates}))`;
-  //   });
-  //   return wktGeometries.join(';');
-  // }
 
   ngOnInit(): void {
     // this.selectedPolygonCoordinates = this.getPolygonData();
   }
 
+  onFileSelected(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0];
+      const reader = new FileReader();
 
+      reader.onload = (e) => {
+        const geoJSONData = JSON.parse(reader.result as string);
+        this.compartidoService.loadAndDisplayGeoJSON(geoJSONData);
+      };
+
+      reader.readAsText(file);
+    }
+  }
+
+  agregarWMS() {
+    // Verifica si se proporcionó una URL
+    if (this.wmsUrl.trim() === '') {
+      return;
+    }
+
+    this.compartidoService.agregarCapaWMS(this.wmsUrl);
+
+    this.wmsUrl = '';
+  }
 }

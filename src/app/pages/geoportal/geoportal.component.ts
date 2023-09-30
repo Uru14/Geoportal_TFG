@@ -6,7 +6,7 @@ import View from 'ol/View.js';
 import {OSM, TileWMS} from 'ol/source';
 import ImageLayer from "ol/layer/Image";
 import {ImageWMS} from "ol/source";
-import {fromLonLat} from "ol/proj";
+import {fromLonLat, transform} from "ol/proj";
 import {CompartidoService} from "../../Services/compartido.service";
 import {Interaction, Modify, Select, Snap} from 'ol/interaction';
 import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
@@ -20,9 +20,7 @@ import {click} from "ol/events/condition";
 import WKT from 'ol/format/WKT';
 import Point from 'ol/geom/Point';
 import LineString from 'ol/geom/LineString';
-
-
-
+import GeoJSON from 'ol/format/GeoJSON';
 
 
 
@@ -50,10 +48,7 @@ export class GeoportalComponent implements OnInit {
   snap!: Snap;
   geometries!: any[];
   selectedPolygonCoordinates: string = '';
-  currentPolygonCoordinates: string = '';
   select: Select | null = null;
-
-
 
 
   constructor(
@@ -68,6 +63,7 @@ export class GeoportalComponent implements OnInit {
     this.iniciarInteracciones();
     this.cargarGeometrias();
     this.suscripciones();
+
   }
 
   private iniciarMapa() {
@@ -133,20 +129,6 @@ export class GeoportalComponent implements OnInit {
 
     this.map.getLayers().push(this.vectorLayer);
   }
-  // private createGeometryData(type: string, coordinates: number[][]): any {
-  //   const featureId = getUid(coordinates);
-  //   const geometryData = {
-  //     id: featureId,
-  //     type: type,
-  //     geometry: coordinates
-  //   };
-  //   console.log("Geometries old", this.geometries);
-  //   this.geometries.push(geometryData);
-  //   console.log("Geometries new", this.geometries);
-  //   this.localStorageProvider.setData(this.geometries);
-  //   console.log('Geometría guardada en el Web Storage');
-  //   return geometryData;
-  // }
 
   private iniciarInteracciones() {
     this.draw = new Draw({
@@ -227,114 +209,6 @@ export class GeoportalComponent implements OnInit {
     }
   }
 
-
-
-
-
-  // private iniciarInteracciones() {
-  //
-  //
-  //   this.draw = new Draw({
-  //     source: this.vectorSource,
-  //     type: 'Polygon'
-  //   });
-  //
-  //   this.drawPunto = new Draw({
-  //     source: this.vectorSource,
-  //     type: 'Point'
-  //   });
-  //
-  //   this.drawDistancia = new Draw({
-  //     source: this.vectorSource,
-  //     type: 'LineString'
-  //   });
-  //
-  //
-  //   this.modify = new Modify({
-  //     source: this.vectorSource
-  //   });
-  //   this.map.addInteraction(this.modify);
-  //
-  //
-  //
-  //   this.snap = new Snap({
-  //     source: this.vectorSource
-  //   });
-  //   this.map.addInteraction(this.snap);
-  //
-  //   //He tenido que usar addEventListener en vez de on porque 'on' no cogía 'drawend'
-  //   this.draw.addEventListener('drawend', (event: any) => {
-  //     console.log("event drawend triggered")
-  //     const feature = event.feature;
-  //     // Generar un ID único para la característica
-  //     const featureId = getUid(feature);
-  //
-  //     // Obtener todas las características existentes en la fuente vectorial
-  //     const features = this.vectorSource.getFeatures();
-  //
-  //     // Verificar si alguna característica tiene el mismo ID
-  //     const isFeaturePresent = features.some((existingFeature) => {
-  //       return existingFeature.getId() === featureId;
-  //     });
-  //
-  //     if (!isFeaturePresent) {
-  //       // Establecer el ID único en la característica
-  //       feature.setId(featureId);
-  //
-  //       // Agregar la característica solo si no está presente
-  //       this.vectorSource.addFeature(feature);
-  //
-  //       const geometryData = {
-  //         id: featureId,
-  //         geometry: feature.getGeometry().getCoordinates()
-  //       };
-  //       console.log("Geometries old", this.geometries);
-  //       this.geometries.push(geometryData);
-  //       console.log("Geometries new", this.geometries);
-  //
-  //
-  //       this.localStorageProvider.setData(this.geometries);
-  //
-  //       console.log('Geometría guardada en el Web Storage');
-  //       // Actualizar las coordenadas del último polígono dibujado
-  //       this.currentPolygonCoordinates = JSON.stringify(geometryData.geometry);
-  //     } else {
-  //       console.log('La característica ya está presente en la fuente de vectores');
-  //     }
-  //   });
-  // }
-
-  // private cargarGeometrias() {
-  //   const STORAGE_KEY: string = "GeometryData";
-  //   try {
-  //     this.geometries = this.localStorageProvider.getData();
-  //     //console.log(this.geometries, typeof this.geometries);
-  //     this.geometries.forEach((geometryItem: any) => {
-  //       const id = geometryItem.id;
-  //       const coordinates = geometryItem.geometry;
-  //       const type = geometryItem.type;
-  //
-  //       const geometry = new Polygon(coordinates);
-  //
-  //
-  //       const feature = new Feature(geometry);
-  //       feature.setId(id);
-  //
-  //
-  //       this.vectorSource.addFeature(feature);
-  //
-  //       console.log('Figura dibujada en el mapa');
-  //     });
-  //
-  //     if (this.geometries.length > 0) {
-  //       const firstGeometry = this.geometries[0];
-  //       this.selectedPolygonCoordinates = JSON.stringify(firstGeometry.geometry);
-  //     }
-  //   } catch (error) {
-  //     console.log('Error al analizar los datos de geometría del Web Storage:', error);
-  //   }
-  // }
-
   private cargarGeometrias() {
     const STORAGE_KEY: string = "GeometryData";
     try {
@@ -396,44 +270,6 @@ export class GeoportalComponent implements OnInit {
         return geometries.getId() !== undefined;
       }
     });
-
-    // const changeInteraction = (polygonId: string) => {
-    //   console.log('ID del polígono seleccionado:', polygonId);
-    //
-    //   if (this.select !== null) {
-    //     this.map.removeInteraction(this.select);
-    //   }
-    //
-    //   this.select = selectClick;
-    //
-    //   if (this.select !== null) {
-    //     this.map.addInteraction(this.select);
-    //     this.select.on('select', function (e) {
-    //       // polygonId = e.target.getFeatures().getArray()[0]?.getId();
-    //       // console.log('ID del polígono seleccionado:', polygonId);
-    //       const selectedFeatures = e.target.getFeatures();
-    //       if (selectedFeatures.getLength() > 0) {
-    //         const selectedFeature = selectedFeatures.item(0);
-    //         const format = new WKT();
-    //         const wkt = format.writeGeometry(selectedFeature.getGeometry());
-    //         const coordinatesTextArea = document.getElementById('coordinatesTextArea') as HTMLTextAreaElement;
-    //         coordinatesTextArea.value = wkt;
-    //       } else {
-    //         const coordinatesTextArea = document.getElementById('coordinatesTextArea') as HTMLTextAreaElement;
-    //         coordinatesTextArea.value = '';
-    //       }
-    //     });
-    //   }
-    // };
-    //
-    // selectClick.on('select', (e) => {
-    //   const selectedFeatures = e.target.getFeatures();
-    //   if (selectedFeatures.getLength() > 0) {
-    //     const selectedFeature = selectedFeatures.item(0);
-    //     const polygonId = selectedFeature.getId();
-    //     changeInteraction(polygonId);
-    //   }
-    // });
 
     const changeInteraction = () => {
       console.log('Limpiando interacciones anteriores y añadiendo interacción de selección.');
@@ -497,6 +333,37 @@ export class GeoportalComponent implements OnInit {
     changeInteraction();
   }
 
+  loadAndDisplayGeoJSON(geoJSONData: any): void {
+
+    const geoJSONFormat = new GeoJSON();
+    const features = geoJSONFormat.readFeatures(geoJSONData);
+
+    this.vectorSource.clear();
+    this.vectorSource.addFeatures(features);
+
+    if (features.length > 0) {
+      this.map.getView().fit(this.vectorSource.getExtent());
+    }
+  }
+
+  private agregarNuevaCapaWMS(url: string) {
+    const wmsSourceOptions = {
+      url: url,
+      params: {
+        'LAYERS': 'NOMBRE_DE_LA_CAPA',
+        'FORMAT': 'image/png',
+        'TRANSPARENT': 'true',
+      },
+    };
+
+    const wmsSource = new TileWMS(wmsSourceOptions);
+    const wmsLayer = new TileLayer({
+      source: wmsSource,
+      visible: true,
+    });
+
+    this.map.addLayer(wmsLayer);
+  }
 
   private suscripciones() {
     this.compartidoService.showPNOA$.subscribe((showPNOA) => {
@@ -537,7 +404,9 @@ export class GeoportalComponent implements OnInit {
       if (value) {
         this.seleccionarGeometrias()
       } else {
-        // this.map.removeInteraction();
+        if (this.select !== null) {
+          this.map.removeInteraction(this.select);
+        }
       }
     });
 
@@ -548,6 +417,15 @@ export class GeoportalComponent implements OnInit {
       this.geometries = [];
       console.log("Datos después de borrarlos: ", this.localStorageProvider.getData())
     });
-  }
+
+    this.compartidoService.geoJSONData$.subscribe((geoJSONData) => {
+      this.loadAndDisplayGeoJSON(geoJSONData);
+    });
+
+    this.compartidoService.agregarNuevaCapaWMS$.subscribe((url) => {
+      this.agregarNuevaCapaWMS(url);
+    });
+
+  };
 
 }

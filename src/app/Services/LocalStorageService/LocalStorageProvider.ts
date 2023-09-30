@@ -23,10 +23,6 @@ export class LocalStorageProvider {
     localStorage.removeItem(this.STORAGE_KEY);
   }
 
-  // public getPolygonDataById(polygonId: string): any {
-  //   const data = this.getData();
-  //   return data.find((item: any) => item.id === polygonId);
-  // }
 
   public getGeometryDataById(geometryId: string): any {
     const data = this.getData();
