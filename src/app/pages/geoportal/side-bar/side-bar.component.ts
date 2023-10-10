@@ -4,6 +4,11 @@ import {CompartidoService} from "../../../Services/compartido.service";
 import {LocalStorageProvider} from "../../../Services/LocalStorageService/LocalStorageProvider";
 import {GeoportalComponent} from "../geoportal.component";
 import { Map as OLMap, View} from 'ol';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import * as xml2js from 'xml2js';
+
 
 
 @Component({
@@ -17,15 +22,24 @@ export class SideBarComponent implements OnInit {
   geometryType: string = '';
   formatoSeleccionado: string = '';
   wmsUrl: string = '';
+  wmsUrlTemp: string = '';
+  availableLayers: string[] = [];
+  selectedLayer: string = '';
+
+
+
 
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
   @ViewChild(GeoportalComponent) geoportalComponent!: GeoportalComponent;
   @Input() map!: OLMap;
 
 
+
   constructor(
     private compartidoService : CompartidoService,
-    private localStorageProvider: LocalStorageProvider) { }
+    private localStorageProvider: LocalStorageProvider,
+    private http: HttpClient) { }
+
 
   togglePNOA() {
     this.compartidoService.togglePNOA();
@@ -81,14 +95,120 @@ export class SideBarComponent implements OnInit {
     }
   }
 
+  // agregarWMS() {
+  //   if (this.wmsUrl.trim() === '') {
+  //     return;
+  //   }
+  //
+  //   this.wmsUrlTemp = this.wmsUrl;
+  //
+  //   // Realiza una solicitud GetCapabilities al servicio WMS para obtener información sobre las capas disponibles
+  //   const capabilitiesUrl = this.wmsUrl + '?service=WMS&request=GetCapabilities';
+  //   this.http.get(capabilitiesUrl, { responseType: 'text' })
+  //     .pipe(
+  //       catchError((error) => throwError('Error al obtener las capas disponibles')),
+  //       map((response) => this.parseCapabilitiesResponse(response))
+  //     )
+  //     .subscribe((layers) => {
+  //       this.availableLayers = layers;
+  //     });
+  //   console.log(capabilitiesUrl);
+  //
+  //   this.wmsUrl = '';
+  // }
   agregarWMS() {
-    // Verifica si se proporcionó una URL
     if (this.wmsUrl.trim() === '') {
       return;
     }
 
-    this.compartidoService.agregarCapaWMS(this.wmsUrl);
+    // Verifica si la URL ya contiene la solicitud GetCapabilities
+    if (!this.wmsUrl.includes('GetCapabilities')) {
+      // Si no lo contiene, agrégalo
+      if (!this.wmsUrl.includes('?')) {
+        this.wmsUrl += '?';
+      } else {
+        this.wmsUrl += '&';
+      }
+      this.wmsUrl += 'service=WMS&request=GetCapabilities';
+    }
 
+    this.wmsUrlTemp = this.wmsUrl;
+
+    // Realiza una solicitud GetCapabilities al servicio WMS para obtener información sobre las capas disponibles
+    const capabilitiesUrl = this.wmsUrl;
+    this.http.get(capabilitiesUrl, { responseType: 'text' })
+      .pipe(
+        catchError((error) => throwError('Error al obtener las capas disponibles')),
+        map((response) => this.parseCapabilitiesResponse(response))
+      )
+      .subscribe((layers) => {
+        this.availableLayers = layers;
+      });
+    console.log(capabilitiesUrl);
     this.wmsUrl = '';
   }
+
+
+  parseCapabilitiesResponse(xmlResponse: string): string[] {
+    const parser = new xml2js.Parser({ explicitArray: false });
+    let layers: string[] = [];
+
+    parser.parseString(xmlResponse, (err, result) => {
+      if (result?.WMS_Capabilities?.Capability?.Layer?.Layer) {
+        layers = result.WMS_Capabilities.Capability.Layer.Layer.map((layer: any) => layer.Name);
+      }
+    });
+    console.log(layers);
+
+    return layers;
+  }
+
+  // parseCapabilitiesResponse(xmlResponse: string): string[] {
+  //   const parser = new xml2js.Parser({ explicitArray: false });
+  //   let layers: string[] = [];
+  //
+  //   parser.parseString(xmlResponse, (err, result) => {
+  //     if (result?.WMS_Capabilities?.Capability?.Layer) {
+  //       layers = this.extractLayerNames(result.WMS_Capabilities.Capability.Layer);
+  //     }
+  //   });
+  //   console.log(layers);
+  //   return layers;
+  // }
+  //
+  // private extractLayerNames(layer: any): string[] {
+  //   let layerNames: string[] = [];
+  //
+  //   if (Array.isArray(layer)) {
+  //     for (const subLayer of layer) {
+  //       layerNames = layerNames.concat(this.extractLayerNames(subLayer));
+  //     }
+  //   } else {
+  //     layerNames.push(layer.Name);
+  //     if (layer.Layer) {
+  //       layerNames = layerNames.concat(this.extractLayerNames(layer.Layer));
+  //     }
+  //   }
+  //   console.log(layerNames);
+  //   return layerNames;
+  // }
+
+
+
+  agregarCapaSeleccionada() {
+    if (this.selectedLayer.trim() === '') {
+      return;
+    }
+    this.compartidoService.agregarCapaWMS(this.wmsUrlTemp, this.selectedLayer);
+
+    this.wmsUrl = '';
+    console.log(this.selectedLayer);
+  }
+  quitarCapaSeleccionada() {
+    this.compartidoService.quitarCapaWMS(this.wmsUrlTemp, this.selectedLayer);
+
+
+  }
+
+
 }

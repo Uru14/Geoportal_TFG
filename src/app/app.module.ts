@@ -19,6 +19,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -45,7 +46,8 @@ import {MatMenuModule} from "@angular/material/menu";
         ReactiveFormsModule,
         MatIconModule,
         MatMenuModule,
-        FormsModule
+        FormsModule,
+        HttpClientModule
     ],
   exports: [
     GeoportalComponent,

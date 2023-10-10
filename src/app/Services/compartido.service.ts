@@ -19,7 +19,6 @@ export class CompartidoService {
   public selecting = false;
   public drawing$ = new BehaviorSubject<boolean>(this.drawing);
   public selecting$ = new BehaviorSubject<boolean>(this.selecting);
-  public selectedPolygonId: string = '';
   public selectedGeometryType: string = '';
   public drawingPunto: boolean = false;
   public drawingDistancia: boolean = false;
@@ -29,8 +28,11 @@ export class CompartidoService {
   eliminarGeometrias$ = this.eliminarGeometriasSubject.asObservable();
   private geoJSONDataSubject = new Subject<any>();
   geoJSONData$ = this.geoJSONDataSubject.asObservable();
-  private agregarNuevaCapaWMSSubject = new Subject<string>();
+  private agregarNuevaCapaWMSSubject = new Subject<{ url: string, nombreCapa: string }>();
   agregarNuevaCapaWMS$ = this.agregarNuevaCapaWMSSubject.asObservable();
+  private quitarCapaWMSSubject = new Subject<{ url: string, nombreCapa: string }>();
+  quitarCapaWMS$ = this.quitarCapaWMSSubject.asObservable();
+
 
 
 
@@ -171,9 +173,14 @@ export class CompartidoService {
     this.geoJSONDataSubject.next(geoJSON);
   }
 
-  agregarCapaWMS(url: string) {
-    this.agregarNuevaCapaWMSSubject.next(url);
+  agregarCapaWMS(url: string, nombreCapa: string) {
+    this.agregarNuevaCapaWMSSubject.next({ url, nombreCapa });
   }
+
+  quitarCapaWMS(url: string, nombreCapa: string) {
+    this.quitarCapaWMSSubject.next({ url, nombreCapa });
+  }
+
 
 }
 

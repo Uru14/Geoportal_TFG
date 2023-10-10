@@ -85,3 +85,54 @@ mat-sidenav-container {
   width: 150px;
 }
 
+
+
+
+
+
+.formulario-wms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #1fabe1;
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+}
+
+
+.add-remove-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+  padding: 0 10px;
+}
+
+
+.formulario-wms button {
+  background-color: #7d009f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+
+.formulario-wms input[type="text"],
+.formulario-wms select {
+  margin-top: 10px;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.formulario-wms button:hover {
+  background-color: #48005c;
+}

@@ -30,7 +30,10 @@
     "proj4": "^2.9.0",
     "rxjs": "~7.8.0",
     "stream-browserify": "^3.0.0",
+    "timers": "^0.1.1",
+    "timers-browserify": "^2.0.12",
     "tslib": "^2.3.0",
+    "xml2js": "^0.6.2",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
@@ -41,6 +44,7 @@
     "@types/jasmine": "~4.3.0",
     "@types/jsonexport": "^3.0.2",
     "@types/proj4": "^2.5.3",
+    "@types/xml2js": "^0.4.12",
     "angular-cli-ghpages": "^1.0.7",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",

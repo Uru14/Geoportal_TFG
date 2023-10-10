@@ -1,0 +1,15 @@
+{
+  "/wms-inspire": {
+    "target": "https://www.ign.es/wms-inspire",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/INSPIRE": {
+    "target": "http://ovc.catastro.meh.es/cartografia/INSPIRE/spadgcwms.aspx?",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+
+
+

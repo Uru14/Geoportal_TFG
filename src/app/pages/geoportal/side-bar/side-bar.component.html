@@ -33,11 +33,24 @@
 
     </div>
 
+    <label>Cargar geojson:</label>
     <input type="file" (change)="onFileSelected($event)" accept=".geojson" />
 
-    <label>URL del servicio WMS:</label>
-    <input type="text" [(ngModel)]="wmsUrl" placeholder="Introduce la URL del servicio WMS" />
-    <button mat-button (click)="agregarWMS()">Agregar WMS</button>
+    <div class="formulario-wms">
+      <label>URL del servicio WMS:</label>
+      <input type="text" [(ngModel)]="wmsUrl" placeholder="Introduce la URL del servicio WMS" />
+      <button mat-button (click)="agregarWMS()">Agregar WMS</button>
+
+      <select [(ngModel)]="selectedLayer">
+        <option *ngFor="let layer of availableLayers" [value]="layer">{{ layer }}</option>
+      </select>
+      <div class="add-remove-buttons">
+        <button mat-button (click)="agregarCapaSeleccionada()">Añadir</button>
+        <button (click)="quitarCapaSeleccionada()">Eliminar</button>
+      </div>
+    </div>
+
+
 
 
   </mat-sidenav>
