@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -5,32 +6,41 @@
   <link rel="stylesheet" href="principal.component.css"> <!-- Archivo CSS para el estilo -->
   <title>GeoPortal de Geomática</title>
 </head>
-<body>
-<header>
-  <img src="https://i.imgur.com/zBNte0T.png" title="source: imgur.com" />
-  <h1>TFG Geoportal con Openlayers y Angular</h1>
-  <p>Bienvenido al Geoportal </p>
-</header>
+<body fxLayout="row wrap" fxLayoutAlign="center center">
+  <header fxFlex="100%" fxFlex.sm="100%" fxFlex.xs="100%">
+    <img src="https://i.imgur.com/zBNte0T.png" title="source: imgur.com" />
+    <h1>TFG Geoportal con Openlayers y Angular</h1>
+    <p>Bienvenido al Geoportal </p>
+  </header>
 
-<section class="features">
-  <div class="feature">
-    <img src="https://i.imgur.com/bPEAFaU.png" title="source: imgur.com" />
-    <h2>Dibuja y descarga tus propias geometrías</h2>
+<section class="features" fxLayout="row wrap" fxLayoutAlign="center center">
+
+  <div class="feature" fxFlex="33%" fxFlex.sm="50%" fxFlex.xs="100%">
+    <div class="feature-content" fxLayout="column" fxLayoutAlign="center center">
+      <img src="https://i.imgur.com/bPEAFaU.png" title="source: imgur.com" />
+      <h2>Dibuja y descarga tus propias geometrías</h2>
+    </div>
   </div>
-  <div class="feature">
-    <img src="https://i.imgur.com/wt5qX1N.png" title="source: imgur.com" />
-    <h2>Explora las diferentas capas disponibles</h2>
+
+  <div class="feature" fxFlex="33%" fxFlex.sm="50%" fxFlex.xs="100%">
+    <div class="feature-content" fxLayout="column" fxLayoutAlign="center center">
+      <img src="https://i.imgur.com/wt5qX1N.png" title="source: imgur.com" />
+      <h2>Explora las diferentas capas disponibles</h2>
+    </div>
   </div>
-  <div class="feature">
-    <img src="https://i.imgur.com/oCdRZKs.png" title="source: imgur.com" />
-    <h2>Obtén las coordenadas al momento</h2>
+
+  <div class="feature" fxFlex="33%" fxFlex.sm="50%" fxFlex.xs="100%">
+    <div class="feature-content" fxLayout="column" fxLayoutAlign="center center">
+      <img src="https://i.imgur.com/oCdRZKs.png" title="source: imgur.com" />
+      <h2>Obtén las coordenadas al momento</h2>
+    </div>
   </div>
+
 </section>
 
-<footer>
-  <a href="/">Explorar el Geoportal</a>
-  <a href="/about">Acerca de</a>
-</footer>
+  <footer fxFlex="100%" fxFlex.sm="100%" fxFlex.xs="100%">
+    <a href="/">Explorar el Geoportal</a>
+    <a href="/about">Acerca de</a>
+  </footer>
 </body>
 </html>
-

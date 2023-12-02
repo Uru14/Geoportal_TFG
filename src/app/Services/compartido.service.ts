@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, Subject} from "rxjs";
 import * as jsonexport from 'jsonexport';
 import {LocalStorageProvider} from "./LocalStorageService/LocalStorageProvider";
+import * as proj4 from 'proj4';
 
 
 
@@ -101,11 +102,37 @@ export class CompartidoService {
     this.eliminarGeometriasSubject.next();
   }
 
-  descargar(formato: string) {
+
+  descargar(formato: string, selectedSRC: string) {
     const localStorageProvider = new LocalStorageProvider();
     const geometrias = localStorageProvider.getData();
 
-    if (formato === 'geojson') {
+
+    console.log("geometrias", geometrias);
+    console.log("SRC", selectedSRC);
+
+    // Verifica si se requiere una transformación y aplícala
+    /*if (selectedSRC !== 'EPSG:4326') {
+          // Define la función de transformación entre las proyecciones
+          const transformFunction = proj4('EPSG:4326', selectedSRC);
+
+          geometrias.forEach((geometria: any) => {
+              if (geometria.type === 'Point') {
+                  const [x, y] = transformFunction.forward(geometria.geometry[0], geometria.geometry[1]);
+                  geometria.geometry = [x, y]; // Transforma las coordenadas
+              } else if (geometria.type === 'LineString' || geometria.type === 'Polygon') {
+                  geometria.geometry = geometria.geometry.map((ring: number[]) => {
+                      return ring.map((coord: number[]) => {
+                          const [x, y] = transformFunction.forward(coord[0], coord[1]);
+                          return [x, y]; // Transforma las coordenadas
+                      });
+                  });
+              }
+          });
+    }*/
+
+
+      if (formato === 'geojson') {
 
       const geoJSONData = {
         type: "FeatureCollection",

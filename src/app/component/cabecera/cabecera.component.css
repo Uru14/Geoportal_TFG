@@ -1,15 +1,49 @@
-.navbar {
+
+.mat-toolbar {
+  background-color: #2c3e50; /* Color de fondo para la barra de navegación */
+  color: white;
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+
 }
+
 .button-container {
   display: flex;
   align-items: center;
 }
 
-.button-container button:not(:last-child) {
-  margin-right: 20px;
+.button-container button {
+  background-color: #656565; /* Nuevo color de fondo para los botones */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Añadir transición para suavizar cambios de color */
+  margin-right: 10px; /* Añadir separación entre los botones */
 }
 
+.button-container button:last-child {
+  margin-right: 0; /* Eliminar el margen derecho del último botón */
+}
+
+.button-container button:hover {
+  background-color: #969696; /* Nuevo color de fondo al pasar el ratón */
+}
+
+
 .GIcon {
-  transform-box: border-box;
+  background-color: #656565; /* Mantenemos el color para el botón especial */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Añadir transición para suavizar cambios de color */
+}
+
+.GIcon:hover {
+  background-color: #969696; /* Mantenemos el color al pasar el ratón para el botón especial */
 }

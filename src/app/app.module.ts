@@ -20,8 +20,10 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
 import { HttpClientModule } from '@angular/common/http';
-
-
+import {MatRadioModule} from "@angular/material/radio";
+import { FlexLayoutModule } from '@angular/flex-layout';
+import {MatButtonModule} from "@angular/material/button";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -47,7 +49,11 @@ import { HttpClientModule } from '@angular/common/http';
         MatIconModule,
         MatMenuModule,
         FormsModule,
-        HttpClientModule
+        HttpClientModule,
+        MatRadioModule,
+        FlexLayoutModule,
+        MatButtonModule,
+        MatDialogModule
     ],
   exports: [
     GeoportalComponent,

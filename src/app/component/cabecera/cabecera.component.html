@@ -2,10 +2,20 @@
   <div>
     <button mat-button routerLink="" class="GIcon"> Geoportal </button>
   </div>
-  <div class="button-container">
+  <div class="button-container" fxShow fxHide.xs>
     <button mat-button routerLink="/principal">Principal</button>
     <button mat-button routerLink="">Geoportal</button>
     <button mat-button routerLink="/about">Acerca de</button>
+  </div>
+  <div fxHide fxShow.xs>
+    <button mat-button [mat-menu-trigger-for]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/principal">Principal</button>
+      <button mat-menu-item routerLink="">Geoportal</button>
+      <button mat-menu-item routerLink="/about">Acerca de</button>
+    </mat-menu>
   </div>
 </mat-toolbar>
 

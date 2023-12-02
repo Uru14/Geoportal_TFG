@@ -83,7 +83,7 @@ export class GeoportalComponent implements OnInit {
                         ratio: 1,
                         serverType: 'geoserver'
                     }),
-                    visible: this.compartidoService.showPNOA // la capa PNOA estará desactivada por defecto
+                    visible: this.compartidoService.showPNOA
                 }),
                 this.WMSLayer = new TileLayer<TileWMS>({
                     source: new TileWMS({
@@ -95,13 +95,13 @@ export class GeoportalComponent implements OnInit {
                         },
                         serverType: 'geoserver'
                     }),
-                    visible: this.compartidoService.showWMS // la capa catastro estará desactivada por defecto
+                    visible: this.compartidoService.showWMS
                 }),
-
             ],
             // AQUÍ SE AJUSTA EL ZOOM Y LA VISTA PARA QUE SE CENTRE EN ESPAÑA
             view: new View({
-                center: fromLonLat([-4, 40]),
+                projection: 'EPSG:4326',
+                center:[-4, 40],
                 zoom: 6
             })
         });
@@ -352,11 +352,11 @@ export class GeoportalComponent implements OnInit {
             url: url,
             params: {
                 'LAYERS': nombreCapa,
-                'FORMAT': 'image/png',
-                'TRANSPARENT': 'true',
+                /*'FORMAT': 'image/png',
+                'TRANSPARENT': 'true',*/
             },
         };
-
+        console.log("wmsSourceOptions", wmsSourceOptions);
         const wmsSource = new TileWMS(wmsSourceOptions);
         const wmsLayer = new TileLayer({
             source: wmsSource,

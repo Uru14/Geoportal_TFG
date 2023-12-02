@@ -1,35 +1,36 @@
-
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
+  background-color: #f9f9f9; /* Color de fondo para el cuerpo */
 }
 
 header {
   text-align: center;
-  background-color: #f4f4f4;
+  background-color: #90a4ae; /* Color de fondo para el encabezado */
   padding: 20px 0;
 }
 
 header h1 {
   font-size: 36px;
-  color: black;
+  color: #263238; /* Color para el título del encabezado */
   margin: 20px 0;
 }
-
 
 .about-content {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f4f4f4;
+  background-color: #ffffff; /* Color de fondo para el contenido */
+  color: #455a64; /* Color de texto para el contenido */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Efecto de sombra */
 }
 
 .about-content h2 {
   font-size: 24px;
   margin-top: 20px;
-  color: #7d009f;
+  color: #607d8b; /* Color para los títulos */
 }
 
 .about-content p {
@@ -39,13 +40,13 @@ header h1 {
 
 footer {
   text-align: center;
-  background-color: #7d009f;
+  background-color: #90a4ae;
   padding: 10px 0;
 }
 
 footer a {
   text-decoration: none;
-  color: white;
+  color: #263238;
   font-size: 18px;
   margin: 0 20px;
 }

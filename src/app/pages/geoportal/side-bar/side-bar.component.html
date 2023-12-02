@@ -1,6 +1,13 @@
-<mat-sidenav-container>
+<!--
+<mat-toolbar class="mat-elevation-z8">
+  <button mat-icon-button (click)="toggleSidenav()"  style="margin-right: 8px;">
+    <mat-icon>menu</mat-icon>
+  </button>
+  Menú
+</mat-toolbar>
 
-  <mat-sidenav mode="side" opened>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav="matSidenav" mode="side" [opened]="isSidenavOpen" (openedChange)="sidenavOpened($event)" class="sidenav">
 
     <div class="dibujar-seleccionar-buttons">
       <button mat-button [matMenuTriggerFor]="drawMenu" class="option-buttons">Dibujar</button>
@@ -10,10 +17,8 @@
         <button mat-menu-item (click)="dibujarPoligono()">Polígono</button>
       </mat-menu>
 
-      <button mat-button class="option-buttons" (click)="seleccionar(geometryType)">Seleccionar
-      </button>
+      <button mat-button class="option-buttons" (click)="seleccionar(geometryType)">Seleccionar</button>
     </div>
-
 
     <div class="download-buttons">
       <button mat-button [matMenuTriggerFor]="downloadMenu" class="option-buttons">Descargar Geometrías</button>
@@ -26,11 +31,19 @@
 
     <button mat-button class="option-buttons" (click)="eliminarGeometrias()">Eliminar Geometrías</button>
 
+    <div class="src-selector">
+      <label>Seleccionar SRC:</label>
+      <div>
+        <mat-radio-group [(ngModel)]="selectedSRC">
+          <mat-radio-button value="EPSG:4326">EPSG:4326</mat-radio-button>
+          <mat-radio-button value="otro">otro</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
 
     <div class="polygon-data">
       <label>Coordenadas del polígono en formato WKT:</label>
       <textarea id="coordinatesTextArea"></textarea>
-
     </div>
 
     <label>Cargar geojson:</label>
@@ -49,16 +62,12 @@
         <button (click)="quitarCapaSeleccionada()">Eliminar</button>
       </div>
     </div>
-
-
-
-
   </mat-sidenav>
 
-  <mat-sidenav-content>
-    <div class="content mat-elevation-z4 ">
-      <ng-content></ng-content> <!-- AQUÍ SE ESTÁ PROYECTANDO LO QUE ESTÁ EN GEOPORTAL -->
 
+  <mat-sidenav-content>
+    <div class="content mat-elevation-z8">
+      <ng-content></ng-content>
       <div class="capas">
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>layers</mat-icon>
@@ -68,9 +77,173 @@
           <button mat-menu-item (click)="toggleWMS()">Catastro</button>
         </mat-menu>
       </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+-->
+
+
+
+<mat-toolbar class="mat-elevation-z8" [ngClass]="{'fixed-toolbar': isXsScreen}">
+  <button mat-icon-button (click)="toggleSidenav()"  style="margin-right: 8px;">
+    <mat-icon>menu</mat-icon>
+  </button>
+  Menú
+  <div fxHide fxShow.xs style="margin-left: auto;">
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/principal">Principal</button>
+      <button mat-menu-item routerLink="">Geoportal</button>
+      <button mat-menu-item routerLink="/about">Acerca de</button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav="matSidenav" mode="side" [opened]="isSidenavOpen" (openedChange)="sidenavOpened($event)" class="sidenav" fxFlex="20%" fxFlex.sm="20%" fxFlex.xs="20%" >
+
+    <div class="dibujar-seleccionar-buttons" fxShow fxHide.xs>
+      <button mat-button [matMenuTriggerFor]="drawMenu" class="option-buttons">Dibujar</button>
+      <mat-menu #drawMenu="matMenu">
+        <button mat-menu-item (click)="dibujarPunto()">Punto</button>
+        <button mat-menu-item (click)="dibujarDistancia()">Distancia</button>
+        <button mat-menu-item (click)="dibujarPoligono()">Polígono</button>
+      </mat-menu>
+
+      <button mat-button class="option-buttons" (click)="seleccionar(geometryType)">Seleccionar</button>
+    </div>
+    <div class="icon-container" fxHide fxShow.xs fxLayout="column" >
+      <button mat-button [matMenuTriggerFor]="drawMenu">
+        <mat-icon>polyline</mat-icon>
+
+      </button>
+      <button mat-button (click)="seleccionar(geometryType)">
+        <mat-icon>ads_click</mat-icon>
+      </button>
+
+      <button mat-button [matMenuTriggerFor]="downloadMenu">
+        <mat-icon>download</mat-icon>
+      </button>
+
+      <button mat-button (click)="eliminarGeometrias()">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+      <button mat-button (click)="fileInput.click()">
+        <mat-icon>upload_file</mat-icon>
+      </button>
+
+      <button mat-button fxHide fxShow.xs (click)="dialogAddWMS.show(); dialogCapas.close()">
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <button mat-button fxHide fxShow.xs (click)="dialogCapas.show(); dialogAddWMS.close()">
+        <mat-icon>layers</mat-icon>
+      </button>
 
 
     </div>
-  </mat-sidenav-content>
 
+    <div class="download-buttons">
+      <button mat-button [matMenuTriggerFor]="downloadMenu" class="option-buttons" fxShow fxHide.xs>Descargar Geometrías</button>
+      <mat-menu #downloadMenu="matMenu">
+        <button mat-menu-item (click)="descargarFormato('geojson')">GeoJSON</button>
+        <button mat-menu-item (click)="descargarFormato('wkt')">WKT</button>
+        <button mat-menu-item (click)="descargarFormato('csv')">CSV</button>
+      </mat-menu>
+    </div>
+
+    <button mat-button class="option-buttons" (click)="eliminarGeometrias()" fxShow fxHide.xs>Eliminar Geometrías</button>
+
+   <!-- <div class="src-selector">
+      <label>Seleccionar SRC:</label>
+      <div>
+        <mat-radio-group [(ngModel)]="selectedSRC">
+          <mat-radio-button value="EPSG:4326">EPSG:4326</mat-radio-button>
+          <mat-radio-button value="otro">otro</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>-->
+
+    <div class="polygon-data"  fxShow fxHide.xs>
+      <label >Coordenadas del polígono en formato WKT:</label>
+      <textarea id="coordinatesTextArea" ></textarea>
+    </div>
+
+    <div fxShow fxHide.xs>
+      <label>Cargar geojson:</label>
+      <input #fileInput type="file" (change)="onFileSelected($event)" accept=".geojson" />
+    </div>
+
+
+    <div class="formulario-wms">
+      <div fxShow fxHide.xs>
+        <label>URL del servicio WMS:</label>
+        <input type="text" [(ngModel)]="wmsUrl" placeholder="Introduce la URL del servicio WMS" />
+        <button mat-button (click)="agregarWMS()">Agregar WMS</button>
+      </div>
+
+      <div fxShow fxHide.xs>
+        <select [(ngModel)]="selectedLayer">
+          <option *ngFor="let layer of availableLayers" [value]="layer">{{ layer }}</option>
+        </select>
+        <div class="add-remove-buttons">
+          <button mat-button (click)="agregarCapaSeleccionada()">Añadir</button>
+          <button (click)="quitarCapaSeleccionada()">Eliminar</button>
+        </div>
+      </div>
+
+    </div>
+
+
+  </mat-sidenav>
+
+
+  <mat-sidenav-content fxFlex="100%">
+    <div class="content mat-elevation-z8">
+      <ng-content></ng-content>
+      <dialog #dialogAddWMS class="custom-dialog">
+        <div>
+          <label>URL del servicio WMS:</label>
+          <br><br>
+          <input type="text" [(ngModel)]="wmsUrl" placeholder="Introduce la URL del servicio WMS" />
+          <br><br>
+        </div>
+        <div>
+          <button (click)="agregarWMS()">Agregar WMS</button>
+          <button (click)="dialogAddWMS.close()">Cerrar</button>
+        </div>
+      </dialog>
+      <dialog #dialogCapas class="custom-dialog">
+        <div>
+          <select [(ngModel)]="selectedLayer">
+            <option *ngFor="let layer of availableLayers" [value]="layer">{{ layer }}</option>
+          </select>
+        </div>
+
+        <div class="add-remove-buttons">
+            <button (click)="agregarCapaSeleccionada()">Añadir</button>
+            <button (click)="quitarCapaSeleccionada()">Eliminar</button>
+            <button (click)="dialogCapas.close()">Cerrar</button>
+        </div>
+
+
+      </dialog>
+
+      <div class="capas">
+        <button mat-icon-button [matMenuTriggerFor]="menuCapas">
+          <mat-icon>layers</mat-icon>
+        </button>
+        <mat-menu #menuCapas="matMenu">
+          <button mat-menu-item (click)="togglePNOA()">PNOA</button>
+          <button mat-menu-item (click)="toggleWMS()">Catastro</button>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-sidenav-content>
 </mat-sidenav-container>
+
+
+
